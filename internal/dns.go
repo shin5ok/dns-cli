@@ -9,8 +9,8 @@ type Record struct {
 }
 
 type Recorder interface {
-	Get(string) (Record, error)
-	Set(Record) error
+	Get(string) (*Record, error)
+	Set(*Record) error
 }
 
 type Rr struct{}
