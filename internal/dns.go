@@ -1,9 +1,11 @@
 package dns
 
 type Record struct {
-	RType string
-	RData string
-	RKey  string
+	RType  string
+	RData  string
+	RKey   string
+	TTL    int
+	Status string
 }
 
 type Recorder interface {
@@ -11,10 +13,12 @@ type Recorder interface {
 	Set(Record) error
 }
 
-func (r *Record) Get(key string) (Record, error) {
-	return Record{}, nil
+type Rr struct{}
+
+func (r *Rr) Get(key string) (*Record, error) {
+	return &Record{}, nil
 }
 
-func (r *Record) Set(Record) error {
+func (r *Rr) Set(*Record) error {
 	return nil
 }
