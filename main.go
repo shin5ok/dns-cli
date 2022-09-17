@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/shin5ok/dns-cli/internal/dns"
+	dns "github.com/shin5ok/dnscli/internal/dns"
 )
 
 func main() {
@@ -13,11 +13,13 @@ func main() {
 	flag.Parse()
 	rr := dns.Record{
 		RType: "A",
-		RData: data,
-		RKey:  key,
+		RData: *data,
+		RKey:  *key,
 		TTL:   60,
 	}
-	err := dns.Set(rr)
+
+	dnsRr := dns.Rr{}
+	err := dnsRr.Set(&rr)
 	if err != nil {
 		fmt.Println(err)
 	}
