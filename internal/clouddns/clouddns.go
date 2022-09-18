@@ -1,4 +1,4 @@
-package dns
+package clouddns
 
 type Record struct {
 	RType  string
@@ -22,5 +22,7 @@ func (r *Rr) Get(key string) (*Record, error) {
 }
 
 func (r *Rr) Set(*Record) error {
+	// ctx := context.Background()
+	// dnsService, err := dns.NewService(ctx, option.WithScopes(dns.NdevClouddnsReadwriteScope))
 	return nil
 }
