@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	dns "github.com/shin5ok/dnscli/internal/dns"
+	"github.com/shin5ok/dnscli/internal/clouddns"
 )
 
 var defaultConfig = map[string]string{
@@ -19,14 +19,14 @@ func main() {
 	domain := flag.String("domain", defaultConfig["domain"], `Do "export DNS_DOMAIN=<your domain>" to set default managed domain`)
 	ttl := flag.Int64("ttl", 60, "")
 	flag.Parse()
-	rr := dns.Record{
+	rr := clouddns.Record{
 		RType: "A",
 		RData: *data,
 		RKey:  *key,
 		TTL:   int(*ttl),
 	}
 
-	dnsRr := dns.Rr{
+	dnsRr := clouddns.Rr{
 		Domain: *domain,
 	}
 	err := dnsRr.Set(&rr)
