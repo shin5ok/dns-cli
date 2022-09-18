@@ -13,7 +13,9 @@ type Recorder interface {
 	Set(*Record) error
 }
 
-type Rr struct{}
+type Rr struct {
+	Domain string
+}
 
 func (r *Rr) Get(key string) (*Record, error) {
 	return &Record{}, nil
