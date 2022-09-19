@@ -40,5 +40,5 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Registered: %+v\n", rr)
+	fmt.Printf("Registered: %#v\n", rr)
 }
