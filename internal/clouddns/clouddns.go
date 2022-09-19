@@ -2,6 +2,7 @@ package clouddns
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	dns "google.golang.org/api/dns/v1"
@@ -35,7 +36,23 @@ func (i *ZoneInfo) makeClient(ctx context.Context) *dns.Service {
 }
 
 func (i *ZoneInfo) Get(key string) (*Record, error) {
-	return &Record{}, nil
+
+	ctx := context.Background()
+
+	dnsService := i.makeClient(ctx)
+
+	responseRecordSet, err := dnsService.ResourceRecordSets.Get(i.ProjectId, i.ManagedZone, key, "A").Context(ctx).Do()
+	if err != nil {
+		fmt.Printf("%v", err)
+		return &Record{}, nil
+	}
+	// log.Printf("%#v\n", responseRecordSet)
+
+	return &Record{
+		RData: responseRecordSet.Rrdatas,
+		RType: responseRecordSet.Type,
+		RKey:  responseRecordSet.Name,
+	}, nil
 }
 
 func (i *ZoneInfo) Set(r *Record) error {
@@ -46,6 +63,8 @@ func (i *ZoneInfo) Set(r *Record) error {
 	recordSet := dns.ResourceRecordSet{
 		Name:    r.RKey,
 		Rrdatas: r.RData,
+		Ttl:     int64(r.TTL),
+		Type:    r.RType,
 	}
 
 	_, err := dnsService.ResourceRecordSets.Patch(i.ProjectId, i.ManagedZone, r.RKey, r.RType, &recordSet).Context(ctx).Do()
