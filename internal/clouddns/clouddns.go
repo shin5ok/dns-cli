@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	"golang.org/x/oauth2/google"
 	dns "google.golang.org/api/dns/v1"
 )
 
@@ -27,6 +26,14 @@ type ZoneInfo struct {
 	ManagedZone string
 }
 
+func (i *ZoneInfo) makeClient(ctx context.Context) *dns.Service {
+	dnsService, err := dns.NewService(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return dnsService
+}
+
 func (i *ZoneInfo) Get(key string) (*Record, error) {
 	return &Record{}, nil
 }
@@ -34,21 +41,14 @@ func (i *ZoneInfo) Get(key string) (*Record, error) {
 func (i *ZoneInfo) Set(r *Record) error {
 
 	ctx := context.Background()
-	c, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	dnsService, err := dns.New(c)
-	if err != nil {
-		log.Fatal(err)
-	}
+	dnsService := i.makeClient(ctx)
 	recordSet := dns.ResourceRecordSet{
 		Name:    r.RKey,
 		Rrdatas: r.RData,
 	}
-	// log.Println(i.ProjectId, i.ManagedZone, r.RKey, r.RType, &recordSet)
-	_, err = dnsService.ResourceRecordSets.Patch(i.ProjectId, i.ManagedZone, r.RKey, r.RType, &recordSet).Context(ctx).Do()
+
+	_, err := dnsService.ResourceRecordSets.Patch(i.ProjectId, i.ManagedZone, r.RKey, r.RType, &recordSet).Context(ctx).Do()
 	if err != nil {
 		return err
 	}
