@@ -9,25 +9,31 @@ import (
 )
 
 var defaultConfig = map[string]string{
-	"domain": os.Getenv("DNS_DOMAIN"),
-	"ttl":    os.Getenv("DNS_DEFAULT_TTL"),
+	"domain":  os.Getenv("DNS_DOMAIN"),
+	"zone":    os.Getenv("DNS_ZONE"),
+	"project": os.Getenv("GOOGLE_CLOUD_PROJECT"),
 }
 
 func main() {
 	data := flag.String("data", "", "")
 	key := flag.String("key", "", "")
-	domain := flag.String("domain", defaultConfig["domain"], `Do "export DNS_DOMAIN=<your domain>" to set default managed domain`)
+	domain := flag.String("domain", defaultConfig["domain"], `ig: example.com`)
+	zone := flag.String("zone", defaultConfig["zone"], `ig: exapmple-com`)
+	projectId := flag.String("project", defaultConfig["project"], "")
 	ttl := flag.Int64("ttl", 60, "")
 	flag.Parse()
+
 	rr := clouddns.Record{
 		RType: "A",
-		RData: *data,
+		RData: []string{*data},
 		RKey:  *key,
 		TTL:   int(*ttl),
 	}
 
-	dnsRr := clouddns.Rr{
-		Domain: *domain,
+	dnsRr := clouddns.ZoneInfo{
+		Domain:      *domain,
+		ProjectId:   *projectId,
+		ManagedZone: *zone,
 	}
 	err := dnsRr.Set(&rr)
 	if err != nil {
