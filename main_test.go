@@ -15,7 +15,7 @@ func Test_main(t *testing.T) {
 		TTL:    60,
 		Status: "OK",
 	}
-	mockRr := &MockRr{}
+	mockRr := &MockZoneInfo{}
 	err := mockRr.Set(&setRecord)
 	if err != nil {
 		t.Error(err)
@@ -31,10 +31,11 @@ func Test_main(t *testing.T) {
 	t.Log(getRecord)
 }
 
-type MockRr struct {
+type MockZoneInfo struct {
+	clouddns.Recorder
 }
 
-func (r *MockRr) Get(key string) (*clouddns.Record, error) {
+func (r *MockZoneInfo) Get(key string) (*clouddns.Record, error) {
 	return &clouddns.Record{
 		RType:  "A",
 		RData:  []string{"192.168.0.1"},
@@ -44,6 +45,6 @@ func (r *MockRr) Get(key string) (*clouddns.Record, error) {
 	}, nil
 }
 
-func (r *MockRr) Set(*clouddns.Record) error {
+func (r *MockZoneInfo) Set(*clouddns.Record) error {
 	return nil
 }
