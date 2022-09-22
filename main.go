@@ -35,7 +35,14 @@ func main() {
 		ProjectId:   *projectId,
 		ManagedZone: *zone,
 	}
-	err := dnsRr.Set(&rr)
+
+	curRr, err := dnsRr.Get(*key)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%#v\n", curRr)
+
+	err = dnsRr.Set(&rr)
 	if err != nil {
 		fmt.Println(err)
 		return
