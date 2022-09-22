@@ -2,7 +2,6 @@ package clouddns
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	dns "google.golang.org/api/dns/v1"
@@ -43,8 +42,7 @@ func (i *ZoneInfo) Get(key string) (*Record, error) {
 
 	responseRecordSet, err := dnsService.ResourceRecordSets.Get(i.ProjectId, i.ManagedZone, key, "A").Context(ctx).Do()
 	if err != nil {
-		fmt.Printf("%v", err)
-		return &Record{}, nil
+		return &Record{}, err
 	}
 	// log.Printf("%#v\n", responseRecordSet)
 
