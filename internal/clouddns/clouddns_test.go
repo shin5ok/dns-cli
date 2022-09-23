@@ -105,3 +105,17 @@ func TestZoneInfo_Get(t *testing.T) {
 		})
 	}
 }
+
+func TestSet(t *testing.T) {
+	i := mockZoneInfo{
+		ZoneInfo: ZoneInfo{
+			Domain:      os.Getenv("DNS_DOMAIN"),
+			ProjectId:   os.Getenv("GOOGLE_CLOUD_PROJECT"),
+			ManagedZone: os.Getenv("DNS_ZONE"),
+		},
+	}
+	err := i.Set(existedRecord)
+	if err != nil {
+		t.Error(err)
+	}
+}
