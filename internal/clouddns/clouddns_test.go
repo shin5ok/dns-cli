@@ -19,7 +19,7 @@ var existedRecord = &Record{
 func (r *mockZoneInfo) Get(key string) (*Record, error) {
 	existedKey := existedRecord.RKey
 	if key != existedKey {
-		return &Record{}, NotFound
+		return &Record{}, ErrNotFound
 	}
 	return &Record{
 		RType: "A",
