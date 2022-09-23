@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	AlreadyExisted = errors.New("dnscli: already existed")
-	NotFound       = errors.New("dnscli: not found")
-	FatalError     = errors.New("dnscli: fatal error")
+	ErrAlreadyExisted = errors.New("dnscli: Already Existed")
+	ErrNotFound       = errors.New("dnscli: Not Found")
+	ErrFatalError     = errors.New("dnscli: Fatal Error")
 )
 
 type Record struct {
@@ -56,12 +56,10 @@ func (i *ZoneInfo) Get(key string) (*Record, error) {
 		if match := errors.As(err, &gError); match {
 			eR := &Record{}
 			switch gError.Code {
-			case 409:
-				return eR, fmt.Errorf("%w", AlreadyExisted)
 			case 404:
-				return eR, fmt.Errorf("%w", NotFound)
+				return eR, fmt.Errorf("%w", ErrNotFound)
 			default:
-				return eR, fmt.Errorf("%w", FatalError)
+				return eR, fmt.Errorf("%w", ErrFatalError)
 			}
 		}
 	}
@@ -91,11 +89,11 @@ func (i *ZoneInfo) Set(r *Record) error {
 		if match := errors.As(err, &gError); match {
 			switch gError.Code {
 			case 409:
-				return fmt.Errorf("%w", AlreadyExisted)
+				return fmt.Errorf("%w", ErrAlreadyExisted)
 			case 404:
-				return fmt.Errorf("%w", NotFound)
+				return fmt.Errorf("%w", ErrNotFound)
 			default:
-				return fmt.Errorf("%w", FatalError)
+				return fmt.Errorf("%w", ErrFatalError)
 			}
 		}
 	}
@@ -120,11 +118,11 @@ func (i *ZoneInfo) Create(r *Record) error {
 		if match := errors.As(err, &gError); match {
 			switch gError.Code {
 			case 409:
-				return fmt.Errorf("%w", AlreadyExisted)
+				return fmt.Errorf("%w", ErrAlreadyExisted)
 			case 404:
-				return fmt.Errorf("%w", NotFound)
+				return fmt.Errorf("%w", ErrNotFound)
 			default:
-				return fmt.Errorf("%w", FatalError)
+				return fmt.Errorf("%w", ErrFatalError)
 			}
 		}
 	}

@@ -38,7 +38,7 @@ func main() {
 	}
 
 	_, err := dnsRr.Get(*key)
-	if errors.Is(err, clouddns.NotFound) {
+	if errors.Is(err, clouddns.ErrNotFound) {
 		err = dnsRr.Create(&rr)
 		if err != nil {
 			fmt.Println(err)
