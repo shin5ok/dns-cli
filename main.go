@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/shin5ok/dnscli/internal/clouddns"
@@ -15,6 +17,20 @@ var defaultConfig = map[string]string{
 	"project": os.Getenv("GOOGLE_CLOUD_PROJECT"),
 }
 
+type config struct {
+	Project string `json:"project"`
+	Domain  string `json:"domain"`
+	Zone    string `json:"zone"`
+}
+
+func envinfo(c config) {
+	data, err := json.Marshal(c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(data))
+}
+
 func main() {
 	data := flag.String("data", "", "")
 	key := flag.String("key", "", "")
@@ -22,7 +38,18 @@ func main() {
 	zone := flag.String("zone", defaultConfig["zone"], `ig: exapmple-com`)
 	projectId := flag.String("project", defaultConfig["project"], "")
 	ttl := flag.Int64("ttl", 60, "")
+	env := flag.Bool("env", false, "")
 	flag.Parse()
+
+	if *env {
+		c := config{
+			Domain:  *domain,
+			Project: *projectId,
+			Zone:    *zone,
+		}
+		envinfo(c)
+		os.Exit(0)
+	}
 
 	rr := clouddns.Record{
 		RType: "A",
