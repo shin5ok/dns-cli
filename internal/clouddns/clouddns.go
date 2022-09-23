@@ -36,7 +36,7 @@ type ZoneInfo struct {
 	ManagedZone string
 }
 
-func (i *ZoneInfo) makeClient(ctx context.Context) *dns.Service {
+func makeClient(ctx context.Context) *dns.Service {
 	dnsService, err := dns.NewService(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -48,7 +48,7 @@ func (i *ZoneInfo) Get(key string) (*Record, error) {
 
 	ctx := context.Background()
 
-	dnsService := i.makeClient(ctx)
+	dnsService := makeClient(ctx)
 
 	responseRecordSet, err := dnsService.ResourceRecordSets.Get(i.ProjectId, i.ManagedZone, key, "A").Context(ctx).Do()
 	if err != nil {
@@ -75,7 +75,7 @@ func (i *ZoneInfo) Set(r *Record) error {
 
 	ctx := context.Background()
 
-	dnsService := i.makeClient(ctx)
+	dnsService := makeClient(ctx)
 	recordSet := dns.ResourceRecordSet{
 		Name:    r.RKey,
 		Rrdatas: r.RData,
@@ -104,7 +104,7 @@ func (i *ZoneInfo) Create(r *Record) error {
 
 	ctx := context.Background()
 
-	dnsService := i.makeClient(ctx)
+	dnsService := makeClient(ctx)
 	recordSet := dns.ResourceRecordSet{
 		Name:    r.RKey,
 		Rrdatas: r.RData,
