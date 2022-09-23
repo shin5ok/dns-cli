@@ -10,8 +10,14 @@ type mockZoneInfo struct {
 	ZoneInfo
 }
 
+var existedRecord = &Record{
+	RType: "A",
+	RData: []string{"192.168.0.1"},
+	RKey:  "foo.example.com.",
+}
+
 func (r *mockZoneInfo) Get(key string) (*Record, error) {
-	existedKey := "foo.example.com."
+	existedKey := existedRecord.RKey
 	if key != existedKey {
 		return &Record{}, NotFound
 	}
