@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -36,16 +37,20 @@ func main() {
 		ManagedZone: *zone,
 	}
 
-	curRr, err := dnsRr.Get(*key)
-	if err != nil {
-		fmt.Println(err)
+	_, err := dnsRr.Get(*key)
+	if errors.Is(err, clouddns.NotFound) {
+		err = dnsRr.Create(&rr)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	} else {
+		err = dnsRr.Set(&rr)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
-	fmt.Printf("%#v\n", curRr)
 
-	err = dnsRr.Set(&rr)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 	fmt.Printf("Registered: %#v\n", rr)
 }
