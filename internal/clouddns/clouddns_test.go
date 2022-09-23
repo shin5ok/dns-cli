@@ -1,7 +1,6 @@
 package clouddns
 
 import (
-	"log"
 	"os"
 	"reflect"
 	"testing"
@@ -12,16 +11,24 @@ type mockZoneInfo struct {
 }
 
 func (r *mockZoneInfo) Get(key string) (*Record, error) {
+	existedKey := "foo.example.com."
+	if key != existedKey {
+		return &Record{}, NotFound
+	}
 	return &Record{
 		RType: "A",
 		RData: []string{"192.168.0.1"},
-		RKey:  "foo.example.com.",
+		RKey:  existedKey,
 		// TTL:    60,
 		// Status: "OK",
 	}, nil
 }
 
 func (r *mockZoneInfo) Set(*Record) error {
+	return nil
+}
+
+func (r *mockZoneInfo) Create(*Record) error {
 	return nil
 }
 
@@ -57,6 +64,19 @@ func TestZoneInfo_Get(t *testing.T) {
 				RType: "A",
 			},
 		},
+		{
+			name: "test2",
+			fields: fields{
+				Domain:      os.Getenv("DNS_DOMAIN"),
+				ProjectId:   os.Getenv("GOOGLE_CLOUD_PROJECT"),
+				ManagedZone: os.Getenv("DNS_ZONE"),
+			},
+			args: args{
+				key: "notfound.example.com.",
+			},
+			want:    &Record{},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -68,7 +88,6 @@ func TestZoneInfo_Get(t *testing.T) {
 				},
 			}
 			got, err := i.Get(tt.args.key)
-			log.Println(got)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ZoneInfo.Get() error = %v, wantErr %v", err, tt.wantErr)
