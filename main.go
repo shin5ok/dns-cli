@@ -31,6 +31,10 @@ func envinfo(c config) {
 	fmt.Println(string(data))
 }
 
+type DNSMain struct {
+	Client clouddns.Recorder
+}
+
 func main() {
 	data := flag.String("data", "", "")
 	key := flag.String("key", "", "")
@@ -64,15 +68,19 @@ func main() {
 		ManagedZone: *zone,
 	}
 
-	_, err := dnsRr.Get(*key)
+	v := DNSMain{
+		Client: &dnsRr,
+	}
+
+	_, err := v.Client.Get(*key)
 	if errors.Is(err, clouddns.ErrNotFound) {
-		err = dnsRr.Create(&rr)
+		err = v.Client.Create(&rr)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 	} else {
-		err = dnsRr.Set(&rr)
+		err = v.Client.Set(&rr)
 		if err != nil {
 			fmt.Println(err)
 			return
