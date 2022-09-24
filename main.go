@@ -68,11 +68,16 @@ func main() {
 		ManagedZone: *zone,
 	}
 
+	run(&dnsRr, rr, *key)
+}
+
+func run(dnsRr clouddns.Recorder, rr clouddns.Record, key string) {
+
 	v := DNSMain{
-		Client: &dnsRr,
+		Client: dnsRr,
 	}
 
-	_, err := v.Client.Get(*key)
+	_, err := v.Client.Get(key)
 	if errors.Is(err, clouddns.ErrNotFound) {
 		err = v.Client.Create(&rr)
 		if err != nil {
