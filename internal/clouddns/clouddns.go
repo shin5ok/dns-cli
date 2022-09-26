@@ -93,7 +93,7 @@ func (i *ZoneInfo) Set(r *Record) error {
 			case 404:
 				return fmt.Errorf("%s(%w)", gError.Message, ErrNotFound)
 			default:
-				return fmt.Errorf("%w", ErrFatalError)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrFatalError)
 			}
 		}
 	}
@@ -122,7 +122,7 @@ func (i *ZoneInfo) Create(r *Record) error {
 			case 404:
 				return fmt.Errorf("%s(%w)", gError.Message, ErrNotFound)
 			default:
-				return fmt.Errorf("%w", ErrFatalError)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrFatalError)
 			}
 		}
 	}
