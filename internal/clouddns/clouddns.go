@@ -89,9 +89,9 @@ func (i *ZoneInfo) Set(r *Record) error {
 		if match := errors.As(err, &gError); match {
 			switch gError.Code {
 			case 409:
-				return fmt.Errorf("%w", ErrAlreadyExisted)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrAlreadyExisted)
 			case 404:
-				return fmt.Errorf("%w", ErrNotFound)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrNotFound)
 			default:
 				return fmt.Errorf("%w", ErrFatalError)
 			}
@@ -118,9 +118,9 @@ func (i *ZoneInfo) Create(r *Record) error {
 		if match := errors.As(err, &gError); match {
 			switch gError.Code {
 			case 409:
-				return fmt.Errorf("%w", ErrAlreadyExisted)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrAlreadyExisted)
 			case 404:
-				return fmt.Errorf("%w", ErrNotFound)
+				return fmt.Errorf("%s(%w)", gError.Message, ErrNotFound)
 			default:
 				return fmt.Errorf("%w", ErrFatalError)
 			}
