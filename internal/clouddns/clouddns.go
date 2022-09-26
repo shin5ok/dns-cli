@@ -57,9 +57,9 @@ func (i *ZoneInfo) Get(key string) (*Record, error) {
 			eR := &Record{}
 			switch gError.Code {
 			case 404:
-				return eR, fmt.Errorf("%w", ErrNotFound)
+				return eR, fmt.Errorf("%s(%w)", gError.Message, ErrNotFound)
 			default:
-				return eR, fmt.Errorf("%w", ErrFatalError)
+				return eR, fmt.Errorf("%s(%w)", gError.Message, ErrFatalError)
 			}
 		}
 	}
