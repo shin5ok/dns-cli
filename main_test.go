@@ -15,12 +15,17 @@ func Test_main(t *testing.T) {
 		TTL:    60,
 		Status: "OK",
 	}
+
 	mockRr := &MockZoneInfo{}
-	err := mockRr.Set(&setRecord)
+	v := DNSMain{
+		Client: mockRr,
+	}
+
+	err := v.Client.Set(&setRecord)
 	if err != nil {
 		t.Error(err)
 	}
-	getRecord, err := mockRr.Get("foo")
+	getRecord, err := v.Client.Get("foo")
 	if err != nil {
 		t.Error(err)
 	}
