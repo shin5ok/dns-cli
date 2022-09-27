@@ -62,19 +62,19 @@ func main() {
 		TTL:   int(*ttl),
 	}
 
-	dnsRr := clouddns.ZoneInfo{
+	zoneInfo := clouddns.ZoneInfo{
 		Domain:      *domain,
 		ProjectId:   *projectId,
 		ManagedZone: *zone,
 	}
 
-	run(&dnsRr, rr, *key)
+	run(&zoneInfo, rr, *key)
 }
 
-func run(dnsRr clouddns.Recorder, rr clouddns.Record, key string) {
+func run(zoneInfo clouddns.Recorder, rr clouddns.Record, key string) {
 
 	v := DNSMain{
-		Client: dnsRr,
+		Client: zoneInfo,
 	}
 
 	_, err := v.Client.Get(key)

@@ -16,9 +16,9 @@ func Test_main(t *testing.T) {
 		Status: "OK",
 	}
 
-	mockRr := &MockZoneInfo{}
+	mockZoneInfo := &MockZoneInfo{}
 	v := DNSMain{
-		Client: mockRr,
+		Client: mockZoneInfo,
 	}
 
 	err := v.Client.Set(&setRecord)
