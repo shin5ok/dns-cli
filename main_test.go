@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/shin5ok/dnscli/internal/clouddns"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_main(t *testing.T) {
@@ -22,17 +23,12 @@ func Test_main(t *testing.T) {
 	}
 
 	err := v.Client.Set(&setRecord)
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
+
 	getRecord, err := v.Client.Get("foo")
-	if err != nil {
-		t.Error(err)
-	}
-	if !reflect.DeepEqual(getRecord.RData, []string{"192.168.0.1"}) {
-		t.Error("RData:", getRecord.RData)
-		t.Error("getRecord.RData is not equal expected")
-	}
+	assert.Nil(t, err)
+
+	assert.True(t, reflect.DeepEqual(getRecord.RData, []string{"192.168.0.1"}))
 	t.Log(getRecord)
 }
 
