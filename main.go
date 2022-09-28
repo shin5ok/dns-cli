@@ -68,10 +68,18 @@ func main() {
 		ManagedZone: *zone,
 	}
 
-	run(&zoneInfo, rr, *key)
+	newRr, err := run(&zoneInfo, rr, *key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	jsonResult, _ := json.Marshal(&newRr)
+	fmt.Printf("Updated: %v\n", string(jsonResult))
+
 }
 
-func run(zoneInfo clouddns.Recorder, rr clouddns.Record, key string) {
+func run(zoneInfo clouddns.Recorder, rr clouddns.Record, key string) (clouddns.Record, error) {
 
 	v := DNSMain{
 		Client: zoneInfo,
@@ -79,18 +87,16 @@ func run(zoneInfo clouddns.Recorder, rr clouddns.Record, key string) {
 
 	_, err := v.Client.Get(key)
 	if errors.Is(err, clouddns.ErrNotFound) {
-		err = v.Client.Create(&rr)
+		err := v.Client.Create(&rr)
 		if err != nil {
-			fmt.Println(err)
-			return
+			return clouddns.Record{}, err
 		}
 	} else {
-		err = v.Client.Set(&rr)
+		err := v.Client.Set(&rr)
 		if err != nil {
-			fmt.Println(err)
-			return
+			return clouddns.Record{}, err
 		}
 	}
 
-	fmt.Printf("Registered: %#v\n", rr)
+	return rr, nil
 }
