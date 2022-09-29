@@ -35,6 +35,14 @@ type DNSMain struct {
 	Client clouddns.Recorder
 }
 
+func usageShow() {
+	usage := `
+Example:
+  $ clouddns -zone w-uname-link -domain w.uname.link. -key api.w.uname.link. -data 10.10.10.10
+`
+	fmt.Println(usage)
+}
+
 func main() {
 	data := flag.String("data", "", "")
 	key := flag.String("key", "", "")
@@ -43,6 +51,7 @@ func main() {
 	projectId := flag.String("project", defaultConfig["project"], "")
 	ttl := flag.Int64("ttl", 60, "")
 	env := flag.Bool("env", false, "")
+	help := flag.Bool("help", false, "")
 	flag.Parse()
 
 	if *env {
@@ -52,7 +61,12 @@ func main() {
 			Zone:    *zone,
 		}
 		envinfo(c)
-		os.Exit(0)
+		return
+	}
+
+	if *zone == "" || *help {
+		usageShow()
+		return
 	}
 
 	rr := clouddns.Record{
