@@ -37,6 +37,8 @@ type DNSMain struct {
 
 func usageShow() {
 	usage := `
+Usage:
+  $ clouddns -zone ZONE_NAME -domain DOMAIN_NAME -key RECORD -data DATA
 Example:
   $ clouddns -zone w-uname-link -domain w.uname.link. -key api.w.uname.link. -data 10.10.10.10
 `
@@ -48,6 +50,7 @@ func main() {
 	key := flag.String("key", "", "")
 	domain := flag.String("domain", defaultConfig["domain"], `ig: example.com`)
 	zone := flag.String("zone", defaultConfig["zone"], `ig: exapmple-com`)
+	rtype := flag.String("type", "A", "")
 	projectId := flag.String("project", defaultConfig["project"], "")
 	ttl := flag.Int64("ttl", 60, "")
 	env := flag.Bool("env", false, "")
@@ -70,7 +73,7 @@ func main() {
 	}
 
 	rr := clouddns.Record{
-		RType: "A",
+		RType: *rtype,
 		RData: []string{*data},
 		RKey:  *key,
 		TTL:   int(*ttl),
