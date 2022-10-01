@@ -23,10 +23,10 @@ func Test_main(t *testing.T) {
 	}
 
 	err := v.Client.Set(&setRecord)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	getRecord, err := v.Client.Get("foo")
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	assert.True(t, reflect.DeepEqual(getRecord.RData, []string{"192.168.0.1"}))
 	t.Log(getRecord)
