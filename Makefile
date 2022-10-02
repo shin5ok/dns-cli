@@ -1,2 +1,2 @@
 all:
-	go build -o clouddns
+	go build "-ldflags=-s -w -buildid=" -trimpath -o clouddns
