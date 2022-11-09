@@ -91,7 +91,12 @@ func main() {
 		return
 	}
 
-	jsonResult, _ := json.Marshal(&newRr)
+	jsonResult, err := json.Marshal(&newRr)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	fmt.Printf("Updated: %v\n", string(jsonResult))
 
 }
