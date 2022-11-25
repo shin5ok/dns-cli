@@ -37,6 +37,8 @@ type DNSMain struct {
 
 func usageShow() {
 	usage := `
+View configuration:
+  $ clouddns -env
 Usage:
   $ clouddns -zone ZONE_NAME -domain DOMAIN_NAME -key RECORD -data DATA
 Example:
@@ -107,7 +109,7 @@ func run(zoneInfo clouddns.Recorder, rr clouddns.Record, key string) (clouddns.R
 		Client: zoneInfo,
 	}
 
-	_, err := v.Client.Get(key)
+	_, err := v.Client.Get(key, "A")
 	if errors.Is(err, clouddns.ErrNotFound) {
 		err := v.Client.Create(&rr)
 		if err != nil {

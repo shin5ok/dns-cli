@@ -25,7 +25,7 @@ func Test_main(t *testing.T) {
 	err := v.Client.Set(&setRecord)
 	assert.NoError(t, err)
 
-	getRecord, err := v.Client.Get("foo")
+	getRecord, err := v.Client.Get("foo", "A")
 	assert.NoError(t, err)
 
 	assert.True(t, reflect.DeepEqual(getRecord.RData, []string{"192.168.0.1"}))
@@ -36,7 +36,7 @@ type MockZoneInfo struct {
 	clouddns.Recorder
 }
 
-func (r *MockZoneInfo) Get(key string) (*clouddns.Record, error) {
+func (r *MockZoneInfo) Get(key string, type_ string) (*clouddns.Record, error) {
 	return &clouddns.Record{
 		RType:  "A",
 		RData:  []string{"192.168.0.1"},

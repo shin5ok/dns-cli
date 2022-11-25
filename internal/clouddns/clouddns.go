@@ -25,7 +25,7 @@ type Record struct {
 }
 
 type Recorder interface {
-	Get(string) (*Record, error)
+	Get(string, string) (*Record, error)
 	Set(*Record) error
 	Create(*Record) error
 }
@@ -44,13 +44,17 @@ func makeClient(ctx context.Context) *dns.Service {
 	return dnsService
 }
 
-func (i *ZoneInfo) Get(key string) (*Record, error) {
+func (i *ZoneInfo) Get(key string, type_ string) (*Record, error) {
+
+	if type_ == "" {
+		type_ = "A"
+	}
 
 	ctx := context.Background()
 
 	dnsService := makeClient(ctx)
 
-	responseRecordSet, err := dnsService.ResourceRecordSets.Get(i.ProjectId, i.ManagedZone, key, "A").Context(ctx).Do()
+	responseRecordSet, err := dnsService.ResourceRecordSets.Get(i.ProjectId, i.ManagedZone, key, type_).Context(ctx).Do()
 	if err != nil {
 		var gError *googleapi.Error
 		if match := errors.As(err, &gError); match {
